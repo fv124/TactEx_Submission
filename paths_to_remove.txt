@@ -1,0 +1,4 @@
+Tactility/Pretrain_Finetuning_CNN_LSTM/CNN50_LSTM_Full_Finetuned.pth
+Tactility/Pretrain_Finetuning_CNN_LSTM/CNN50_LSTM_Full_Pretrained.pth
+Tactility/Pretrain_Finetuning_Transformer/Transformer_Half_Finetuned.pth
+Tactility/Pretrain_Finetuning_Transformer/Transformer_Half_Pretrained.pth
