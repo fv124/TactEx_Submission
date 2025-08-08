@@ -40,7 +40,7 @@ def get_buffer_images():
         
     color_frame = frames.get_color_frame()
     color_image = np.asanyarray(color_frame.get_data())
-    cv2.imwrite("Vision/captured_image.jpg", color_image)
+    cv2.imwrite("Vision/Scene_Images/captured_image.jpg", color_image)
     pipeline.stop()
 
     return depth_buffer, depth_frame
