@@ -88,7 +88,7 @@ def get_frames(df, path2):
 # 3. Define Pytorch Dataset Class: this custom class is based on examples from pytorch code: https://docs.pytorch.org/tutorials/beginner/data_loading_tutorial.html
 # class needs to overwrite two functions: __len__ and __get__item and should inherit from torch.utils.data.Dataset
 class Online_Data(Dataset):
-    def __init__(self, dataframe, video_root='Online_Data', transform=None):
+    def __init__(self, dataframe, video_root='Online_Data', transform=None, contact_number = contact_number):
         self.data = dataframe
         self.video_root = video_root
         self.transform = transform
@@ -150,7 +150,7 @@ class Online_Data(Dataset):
     
 # 4. Define LSTM Model 
 class Hardness_CNN_LSTM(nn.Module):
-    def __init__(self, lstm_hidden_size=512, lstm_layers=lstm_layers):
+    def __init__(self, lstm_hidden_size=512, lstm_layers=lstm_layers, resnet_depth = resnet_depth):
         super().__init__()
 
         # Define pretrained resnet model as start for backbone

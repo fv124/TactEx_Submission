@@ -2,14 +2,20 @@ from Language.NLP import chat_response, get_intent
 from Vision.Register_Scene import get_buffer_images
 from Vision.GroundedSAM import segment_object
 from Vision.YOLO import segment_from_YOLO
+from Tactility.Tactility_Sensing import make_contact
+from Tactility.Tactility_Prediction import tactility_prediction
+from Language.Tactile_LLM import structure_input_LLM, get_LLM_response
 import streamlit as st
+import os
+import csv
 import time
 import numpy as np
 from xarm.wrapper import XArmAPI
 import warnings
 warnings.filterwarnings("ignore")
 
-model = 'YOLO' # SAM or YOLO
+model = 'SAM' \
+'' # SAM or YOLO
 
 if "arm" not in st.session_state:
     arm = XArmAPI('192.168.1.117')  # Replace with your robot's IP address
@@ -22,6 +28,10 @@ if "arm" not in st.session_state:
     st.session_state.arm = arm
 else:
     arm = st.session_state.arm
+
+with open(os.path.join("Tactility/Data", "Data_Overview.csv"), 'w', newline='') as f:
+   writer = csv.writer(f)
+   writer.writerow(['Object','Pose_Number', 'Contact', 'Hardness_Level', 'SSIM', 'Marker_Displacement', 'Z'])
 
 if "depth_buffer" not in st.session_state:
     st.session_state.depth_buffer, st.session_state.depth_frame = get_buffer_images()
@@ -62,7 +72,7 @@ if not st.session_state.intro_shown:
 
 # Show image only once after intro
 if st.session_state.get("show_image", False):
-    st.image("Vision/captured_image.jpg", width=400)
+    st.image("Vision/Scene_Images/captured_image.jpg", width=400)
     st.session_state.show_image = True  # unset so it doesn't show again
 
 if prompt := st.chat_input("Enter command:"):
@@ -84,11 +94,11 @@ if prompt := st.chat_input("Enter command:"):
             if st.session_state.get("last_prompt") != prompt:
                 if model == 'SAM':
                     centroids, phrases = segment_object(
-                        text_prompt, "Vision/captured_image.jpg", intent, depth_buffer, depth_frame, fruits_of_interest
+                        text_prompt, "Vision/Scene_Images/captured_image.jpg", intent, depth_buffer, depth_frame, fruits_of_interest
                     )
                     
                 elif model == 'YOLO':
-                    centroids, phrases = segment_from_YOLO("Vision/captured_image.jpg", fruits_of_interest, depth_buffer, depth_frame)
+                    centroids, phrases = segment_from_YOLO("Vision/Scene_Images/captured_image.jpg", fruits_of_interest, depth_buffer, depth_frame)
                 
                 st.session_state.last_prompt = prompt
                 H_cam2base = np.loadtxt('Calibration/cam2base.txt').reshape(4, 4)
@@ -100,18 +110,26 @@ if prompt := st.chat_input("Enter command:"):
             else:
                 end_time = time.time()
                 print("--- %s VLA seconds ---" % (end_time - start_time))
-                for centroid in centroids:
+                for fruit_number, centroid in enumerate(centroids):
                     print(centroid)
                     point_3d = [centroid[0],centroid[1], centroid[2]]
                     pt_cam_h = np.array(point_3d + [1.0]).reshape(4, 1)
                     pt_base = H_cam2base @ pt_cam_h
                     x, y, z = pt_base[:3].flatten()
 
-                    arm.set_position(x=x-30,y=y,z=z+85, speed=80)  
+                    arm.set_position(x=x-20,y=y,z=z+75, speed=80)  
                     time.sleep(8)
+                    count_before = phrases[:fruit_number].count(phrases[fruit_number])
+                    make_contact(phrases[fruit_number], arm, HA=count_before)
 
-                # pose = [221.718445, -3.396362, 264.045105, 179.870073, 0.795552, -8.375153]
-                # arm.set_position(x = pose[0], y=pose[1], z=pose[2], roll=pose[3], pitch=pose[4], yaw=pose[5], speed=50)
+                pose = [221.718445, -3.396362, 264.045105, 179.870073, 0.795552, -8.375153]
+                arm.set_position(x = pose[0], y=pose[1], z=pose[2], roll=pose[3], pitch=pose[4], yaw=pose[5], speed=50)
+                hardness_values = tactility_prediction(model_name='CNN_LSTM')
+
+                structure_response = structure_input_LLM(centroids, phrases, hardness_values)
+                response4 = get_LLM_response(structure_response)
+                st.write_stream(intro_stream(response4))
+                st.session_state.messages.append({"role": "Assistant", "content": response})
 
         else:
             pose = [221.718445, -3.396362, 264.045105, 179.870073, 0.795552, -8.375153]

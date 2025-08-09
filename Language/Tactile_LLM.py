@@ -61,8 +61,8 @@ def get_LLM_response(objects_structured):
     - Mango: ripe between 25 and 40 HA.
     - Lemon: ripe between 35-50.
     - Tomato: ripe between 70-80 HA.
-    4. All hardness levels are in shore A values. HA = Hardness Unit.
-    5. You can compare the same fruits or vegetables, example given by saying if there are two bananas: the left one is the most ready to eat.
+    4. All hardness levels are in shore 00 values. HA = Hardness Unit.
+    5. You can compare the same fruits or vegetables, example given by saying if there are two bananas: the left one is the most ready to eat. If fruits are close to one another do not take conclusions.
     6. Do not compare different fruits or vegetables in terms of ready to eat or ripeness, so skip that.
     7. Keep in mind location is just as support to talk about object ripeness and relative positions of similar positioned objects. It is just to refer to the user
     which iterm you are talking about.

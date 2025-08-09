@@ -25,7 +25,7 @@ leave_one_out = True
 # + also change 6.1: path to data!
 
 # 2. Recover Code from pretraining file
-from Pretrain_Finetuning_CNN_LSTM.Pretraining_Online_Data_CNNLSTM import Hardness_CNN_LSTM
+from Tactility.Pretrain_Finetuning_CNN_LSTM.Pretraining_Online_Data_CNNLSTM import Hardness_CNN_LSTM
 
 # 3. Define Dataset of own collected dataset. To collect data and create table, we refer the user to the paper and to the python file "Collect_Data":
 # There, contact is defined based on two criteria: SSIM with a reference image and marker displacement. After contact, 8 images are collected
@@ -34,7 +34,7 @@ from Pretrain_Finetuning_CNN_LSTM.Pretraining_Online_Data_CNNLSTM import Hardnes
 # class needs to overwrite two functions: __len__ and __get__item and should inherit from torch.utils.data.Dataset. It mimics setup of online dataset in pretraining files
 
 class Hardness_Dataset(Dataset):
-    def __init__(self, dataframe, image_root='Multi_Depth_Data/', transform=None, contact_number = 2):
+    def __init__(self, dataframe, image_root='Multi_Depth_Data/', transform=None, contact_number = contact_number):
         self.data = dataframe
         self.image_root = image_root
         self.transform = transform

@@ -22,13 +22,12 @@ from skimage.metrics import structural_similarity as ssim
 # 1.Change crucial parameters to run right model
 create_table = False
 contact_number = 2
-lstm_layers = 3
 train_range = 'Full'
 # + also change 6.1: path to data!
 
 # 2. Recover code from CNN_LSTM version
-from Pretrain_Finetuning_CNN_LSTM.Pretraining_Online_Data_CNNLSTM import variance_penalty, compute_rmse #for computing loss function
-from Pretrain_Finetuning_CNN_LSTM.Pretraining_Online_Data_CNNLSTM import Online_Data, calculate_color_ssim, get_frames, get_online_data #for computing online dataframe
+from Tactility.Pretrain_Finetuning_CNN_LSTM.Pretraining_Online_Data_CNNLSTM import variance_penalty, compute_rmse #for computing loss function
+from Tactility.Pretrain_Finetuning_CNN_LSTM.Pretraining_Online_Data_CNNLSTM import Online_Data, calculate_color_ssim, get_frames, get_online_data #for computing online dataframe
 
 # 3. Define Transformer Hardness Estimator
 class Hardness_Transformer(nn.Module):
