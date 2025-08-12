@@ -7,7 +7,7 @@ def get_fruits_of_interest(user_input):
     words = [token.lemma_.lower() for token in doc if not token.is_punct]
 
     keywords = ['fruit', 'fruits']
-    fruits = ['banana', 'apple', 'pear', 'peach', 'lemon', 'lime', 'tomato', 'patato', 'avocado', 'pepper', 'carrot', 'corn', 'zucchini', 'kiwi', 'strawberry', 'garlic']
+    fruits = ['banana', 'apple', 'pear', 'peach', 'lemon', 'lime', 'tomato', 'patato', 'avocado', 'pepper', 'carrot', 'corn', 'zucchini', 'kiwi', 'strawberry', 'garlic', 'potato']
     fruits_of_interest = []
     pluralize = False
 
@@ -29,6 +29,7 @@ def get_fruits_of_interest(user_input):
 
     if len(fruits_of_interest)==0 and key==True:
         intent = "compare_all"
+        fruits_of_interest = fruits
     elif len(fruits_of_interest)==0:
         intent = "N/A"
     elif pluralize==True or key2 == "JJS":
@@ -85,7 +86,7 @@ def chat_response(user_input):
         answer = structure_fruits(plural_obj)
         return (f"I will compare the {prop} of the different {answer}."), fruits_of_interest
     elif intent == 'compare_all':
-        return (f"I will check the {prop} of all the fruits i can identify. I will come back to you with a report."), "all fruits"
+        return (f"I will check the {prop} of all the fruits i can identify. I will come back to you with a report."), fruits_of_interest
     else:
         return (f"Got it, I will check the {prop} level of the {fruits_of_interest[0]} on the table."), fruits_of_interest
     

@@ -244,7 +244,7 @@ def segment_object(text, image_str, intent, depth_buffer, depth_frame, fruits_of
             for j in range(i + 1, len(boxes)):
                 if j in indices_to_remove or i in indices_to_remove:
                     continue
-                if torch.allclose(boxes[i], boxes[j], atol=1e-3):
+                if torch.allclose(boxes[i], boxes[j], atol=5e-3): #to make sure if object had two labels, we only select highest
                     if logits[i] < logits[j]:
                         indices_to_remove.append(i)
                     else:
@@ -263,16 +263,17 @@ def segment_object(text, image_str, intent, depth_buffer, depth_frame, fruits_of
 
         centroids = annotate_and_extract_centroids(I, image_source, boxes, logits, phrases, sam_predictor, depth_buffer, depth_frame, device)
 
-    elif intent == 'multiple_2':
+    elif intent == 'multiple_2' or intent =='compare_all':
         I = []
-        F = phrases
         indices_to_remove = []
+        print(phrases)
+
 
         for i in range(len(boxes)):
             for j in range(i + 1, len(boxes)):
                 if j in indices_to_remove or i in indices_to_remove:
                     continue
-                if torch.allclose(boxes[i], boxes[j], atol=1e-3):
+                if torch.allclose(boxes[i], boxes[j], atol=5e-3):
                     if logits[i] < logits[j]:
                         indices_to_remove.append(i)
                     else:
@@ -282,19 +283,20 @@ def segment_object(text, image_str, intent, depth_buffer, depth_frame, fruits_of
         boxes = boxes[keep_indices]
         logits = logits[keep_indices]
         phrases = [phrases[i] for i in keep_indices]
+        F = phrases
 
         for i in range(len(boxes)):
             I.append(i)
 
-        for i, phrase in enumerate(phrases):
-            if phrase in fruits_of_interest:
-                if phrase not in F:
-                    F.append(phrase)
-                    I.append(i)
+        # for i, phrase in enumerate(phrases):
+        #     if phrase in fruits_of_interest:
+        #         if phrase not in F:
+        #             F.append(phrase)
+        #             I.append(i)
 
         centroids = annotate_and_extract_centroids(I, image_source, boxes, logits, phrases, sam_predictor, depth_buffer, depth_frame, device)
 
-    return centroids, F
+    return centroids, F 
         
         
 

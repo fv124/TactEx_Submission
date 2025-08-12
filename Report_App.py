@@ -14,8 +14,9 @@ from xarm.wrapper import XArmAPI
 import warnings
 warnings.filterwarnings("ignore")
 
-model = 'SAM' \
-'' # SAM or YOLO
+t0 = time.time()
+
+model = 'SAM' # SAM or YOLO
 
 if "arm" not in st.session_state:
     arm = XArmAPI('192.168.1.117')  # Replace with your robot's IP address
@@ -75,11 +76,15 @@ if st.session_state.get("show_image", False):
     st.image("Vision/Scene_Images/captured_image.jpg", width=400)
     st.session_state.show_image = True  # unset so it doesn't show again
 
+tactile_time = 0
+movement_time = 0
+centres = []
+
 if prompt := st.chat_input("Enter command:"):
     st.session_state.messages.append({"role": "User", "content": prompt})
     with st.chat_message("User"):
         st.markdown(prompt)
-        
+    t1 = time.time()
     response, fruits_of_interest = chat_response(prompt) 
     prop, text_prompt, intent = get_intent(prompt)
     st.session_state.messages.append({"role": "Assistant", "content": response})
@@ -90,7 +95,7 @@ if prompt := st.chat_input("Enter command:"):
             response2 = "I will start by computing the locations of the fruits you are asking for. This may take a minute or so."
             st.write_stream(intro_stream(response2))
             st.session_state.messages.append({"role": "Assistant", "content": response})
-            start_time = time.time()
+            t2 = time.time()
             if st.session_state.get("last_prompt") != prompt:
                 if model == 'SAM':
                     centroids, phrases = segment_object(
@@ -108,28 +113,51 @@ if prompt := st.chat_input("Enter command:"):
                 st.write_stream(intro_stream(response3))
                 st.session_state.messages.append({"role": "Assistant", "content": response})
             else:
-                end_time = time.time()
-                print("--- %s VLA seconds ---" % (end_time - start_time))
+                t3 = time.time()
+                print(phrases)
                 for fruit_number, centroid in enumerate(centroids):
-                    print(centroid)
+                    it4 = time.time()
                     point_3d = [centroid[0],centroid[1], centroid[2]]
                     pt_cam_h = np.array(point_3d + [1.0]).reshape(4, 1)
                     pt_base = H_cam2base @ pt_cam_h
                     x, y, z = pt_base[:3].flatten()
+                    centres.append((x,y,z))
 
-                    arm.set_position(x=x-20,y=y,z=z+75, speed=80)  
+                    arm.set_position(x=x-20,y=y,z=z+85, speed=90) # calibration has large influence, check if x position in matrix is smaller than 450, then bias 15 is ok
                     time.sleep(8)
-                    count_before = phrases[:fruit_number].count(phrases[fruit_number])
+                    it5 = time.time()
+                    count_before = phrases[:
+                    fruit_number].count(phrases[fruit_number])
                     make_contact(phrases[fruit_number], arm, HA=count_before)
+                    it6 = time.time()
+                    tactile_time += (it6-it5)
+                    movement_time += (it5-it4)
 
                 pose = [221.718445, -3.396362, 264.045105, 179.870073, 0.795552, -8.375153]
                 arm.set_position(x = pose[0], y=pose[1], z=pose[2], roll=pose[3], pitch=pose[4], yaw=pose[5], speed=50)
+                it7 = time.time()
                 hardness_values = tactility_prediction(model_name='CNN_LSTM')
-
-                structure_response = structure_input_LLM(centroids, phrases, hardness_values)
+                if intent != 'compare_all':
+                    for fruit in fruits_of_interest:
+                        if fruit not in phrases:
+                            phrases.append(fruit)
+                            hardness_values.append(0)
+                            centres.append((0,0,0))
+                structure_response = structure_input_LLM(centres, phrases, hardness_values)
                 response4 = get_LLM_response(structure_response)
                 st.write_stream(intro_stream(response4))
                 st.session_state.messages.append({"role": "Assistant", "content": response})
+                it8 = time.time()
+
+                print('Initial Loading Time:', t1-t0)
+                print('VLA Computation Time:', t3-t2)
+                print('Tactile Time', tactile_time)
+                print('Movement Time', movement_time)
+                print('Tactile prediction + feedback summary', it8-it7)
+                print('Total Time', it8-t0)
+
+                pose = [221.718445, -3.396362, 264.045105, 179.870073, 0.795552, -8.375153]
+                arm.set_position(x = pose[0], y=pose[1], z=pose[2], roll=pose[3], pitch=pose[4], yaw=pose[5], speed=50)
 
         else:
             pose = [221.718445, -3.396362, 264.045105, 179.870073, 0.795552, -8.375153]

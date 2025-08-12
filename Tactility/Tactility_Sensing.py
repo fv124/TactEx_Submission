@@ -128,6 +128,7 @@ def make_contact(object, arm, path="Tactility/Data", HA=0, N_Data=1):
 
                     contact1_path = os.path.join(path, f'{object}_{HA}_Contact1_{i}.png')
                     record_and_save_image(contact1_path)
+                    time.sleep(0.25)
 
                     contact_score = calculate_color_ssim(ref_path, contact1_path)[0]
                     marker_displacement = calculate_marker_displacement(ref_path, contact1_path)
@@ -145,6 +146,7 @@ def make_contact(object, arm, path="Tactility/Data", HA=0, N_Data=1):
 
                     contact_path = os.path.join(path, f'{object}_{HA}_Contact{s}_{i}.png')
                     record_and_save_image(contact_path)
+                    time.sleep(0.25)
                     
                     contact_score = calculate_color_ssim(ref_path, contact_path)[0]
                     marker_displacement = calculate_marker_displacement(ref_path, contact_path)

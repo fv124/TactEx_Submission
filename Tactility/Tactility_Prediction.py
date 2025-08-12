@@ -24,7 +24,6 @@ def tactility_prediction(model_name='CNN_LSTM'):
     ])
 
     preds = []
-    targets = []
     df = pd.read_csv('Tactility/Data/Data_Overview.csv')
     df = df.drop_duplicates(subset=['Object', 'Pose_Number', 'Hardness_Level'], keep='last').reset_index(drop=True)
     df.head()
@@ -38,8 +37,7 @@ def tactility_prediction(model_name='CNN_LSTM'):
             labels = labels.to(device)
 
             outputs = model(images).squeeze()
-            preds.extend(outputs.cpu().numpy())
-            targets.extend(labels.cpu().numpy())
+            preds.extend(outputs.cpu().view(-1).numpy().tolist())
 
     return preds
 

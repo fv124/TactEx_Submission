@@ -61,10 +61,7 @@ def segment_from_YOLO(image_str, fruits_of_interest, depth_buffer, depth_frame):
 
     # results.masks is a list or tensor of masks, one per detected object
     for i, mask in enumerate(results[0].masks.data):
-        # mask shape: (H, W), binary
-        mask_np = mask.cpu().numpy()  # convert to numpy if needed
-
-        # Save mask as image
+        mask_np = mask.cpu().numpy()  
         mask_img = (mask_np * 255).astype(np.uint8)
         cv2.imwrite(f"Vision/Masks/mask_{i}.png", mask_img)
     
