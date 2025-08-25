@@ -16,7 +16,7 @@ warnings.filterwarnings("ignore")
 
 t0 = time.time()
 
-model = 'SAM' # SAM or YOLO
+model = 'YOLO' # SAM or YOLO
 
 if "arm" not in st.session_state:
     arm = XArmAPI('192.168.1.117')  # Replace with your robot's IP address
@@ -123,7 +123,7 @@ if prompt := st.chat_input("Enter command:"):
                     x, y, z = pt_base[:3].flatten()
                     centres.append((x,y,z))
 
-                    arm.set_position(x=x-20,y=y,z=z+85, speed=90) # calibration has large influence, check if x position in matrix is smaller than 450, then bias 15 is ok
+                    arm.set_position(x=x-20,y=y,z=z+80, speed=90) # calibration has large influence, check if x position in matrix is smaller than 450, then bias 15 is ok
                     time.sleep(8)
                     it5 = time.time()
                     count_before = phrases[:

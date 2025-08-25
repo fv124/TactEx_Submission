@@ -47,6 +47,7 @@ def get_3d_centroid_from_inner_mask(mask, depth_buffer, intr):
 
     return centroid, inner_mask
 
+### Beginning of Reference: OpenAI ChatGPT (on 2025/June) and Github GSam: https://github.com/IDEA-Research/Grounded-Segment-Anything
 @st.cache_resource
 def load_groundingdino_model(repo_id, model_filename, config_filename, device='cpu'):
     import groundingdino.datasets.transforms as T  # type: ignore
@@ -142,6 +143,8 @@ def initialize_models(device=None, model_name='vit_b'):
         "stable_diffusion_pipe": stable_diffusion_pipe,
         "device": device,
     }
+### End of Reference: OpenAI ChatGPT and Github GSam: https://github.com/IDEA-Research/Grounded-Segment-Anything
+
 
 def show_mask(mask, image, random_color=True):
     if random_color: # just use random color for every object to put as segmentation mask
