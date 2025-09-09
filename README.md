@@ -3,7 +3,7 @@
 <p align="center">
   <img src="https://github.com/user-attachments/assets/1f9b502d-818f-479b-9c1e-5a6c3b2c3a1c" width="600" height="350" alt="Overview Image">
 </p>
-This page contains the code to recreate the results reported from TactEx: A Multimodal Robotic Pipeline for Human-Like Touch and Hardness Estimation. The [report](./Report_TactEx_Felix_Verstraete.pdf) can be consulted on this GitHub page as well. A demo-video is included underneath.
+This page contains the code to recreate the results reported from TactEx: A Multimodal Robotic Pipeline for Human-Like Touch and Hardness Estimation. The [report](Report_TactEx_Felix_Verstraete.pdf) can be consulted on this GitHub page as well. A demo-video is included underneath.
 
 ## Contents
 
