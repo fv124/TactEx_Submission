@@ -29,7 +29,7 @@ def structure_input_LLM(centroids, phrases, HA):
     return objects_structured
 
 def get_LLM_response(objects_structured):
-    API_KEY = "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" #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  #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
+    API_KEY = 'API_key'
     headers = {
         "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/json"
