@@ -21,7 +21,7 @@ https://github.com/user-attachments/assets/724e007f-3ee0-4272-ac70-260be6d979df
 Before Launching the app, the user should calibrate the camera to the robot space and make sure the robot (this project made use of XArm UFactory 850) is connected. This takes about 5 minutes and is explained the [notebook](./Calibration/Calibrate.ipynb).
 
 ## Launching
-For Launching the app, please make sure you have first calibrated the camera. You can set the visual servoing to "YOLO" or "GSAM" in the [app file](./Report_App.py). Install the requirement by running following command.
+For Launching the app, please make sure you have first calibrated the camera and inserted the API keys in the language models. You can set the visual servoing to "YOLO" or "GSAM" in the [app file](./Report_App.py). Install the requirement by running following command.
 
 ```python
 pip install -r requirements.txt
@@ -50,7 +50,7 @@ The notebook for collecting the small custom dataset for finetuning is found in 
 The visual servoing models can be found in following [folder](./Vision). You can either choose to run the YOLO model or the GSAM model. Their advantages and disadvantages are reported in the paper. Exampoes masks and scene images (both annotatied and raw) are also visible in the folder.
 
 ## Language
-The NLP logic for the visual servoing can be found in this [file](./Language/NLP.py). Finally, the LLM and LLM as a judge are alos located in the folder Language. To run them, use following commands:
+The NLP logic for the visual servoing can be found in this [file](./Language/NLP.py). Finally, the LLM and LLM as a judge are alos located in the folder Language. Please generate an API key via Groq to enable connection to the different language models. To run them eventually, use following commands:
 
 ```python
 python Language/Tactile_LLM.py.py
