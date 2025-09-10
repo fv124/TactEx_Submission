@@ -7,8 +7,7 @@ import time
 from Tactile_LLM import get_LLM_response, structure_input_LLM
 
 def evaluate_LLM_output(objects_structured, model_output):
-    API_KEY = "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"   #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
-
+    API_KEY = 'API_KEY'
     HEADERS = {
         "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/json"
